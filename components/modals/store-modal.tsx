@@ -1,8 +1,11 @@
 "use client";
 
+import axios from "axios";
+
+import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { useState } from "react";
 
 import { Modal } from "@/components/ui/modal";
 import { useStoreModal } from "@/hooks/use-store-modal";
@@ -16,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 
 const FormSchema = z.object({
   name: z.string().min(1, {
@@ -27,6 +31,7 @@ type FormInput = z.infer<typeof FormSchema>;
 
 export const StoreModal = () => {
   const storeModal = useStoreModal();
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<FormInput>({
     resolver: zodResolver(FormSchema),
@@ -36,14 +41,23 @@ export const StoreModal = () => {
   });
 
   const onSubmit = async (values: FormInput) => {
-    console.log(values);
-    //TODO create store
+    try {
+      setLoading(true);
+
+      const response = await axios.post("/api/stores", values);
+
+      toast.success("Depósito creado exitosamente.");
+    } catch (error) {
+      toast.error("Ups! Algo salió mal al crear el depósito.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Modal
-      title="Crear deposito"
-      description="Agregar un nuevo deposito para gestionar nuevos productos y categorias"
+      title="Crear depositó"
+      description="Agregar un nuevo depósito para gestionar nuevos productos y categorías"
       isOpen={storeModal.isOpen}
       onClose={storeModal.onClose}>
       <div>
@@ -57,7 +71,11 @@ export const StoreModal = () => {
                   <FormItem>
                     <FormLabel>Nombre:</FormLabel>
                     <FormControl>
-                      <Input placeholder="Deposito para Gamers" {...field} />
+                      <Input
+                        disabled={loading}
+                        placeholder="Depósito para Gamers"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -65,12 +83,15 @@ export const StoreModal = () => {
               />
               <div className="pt-6 space-x-2 flex items-center justify-end w-full">
                 <Button
+                  disabled={loading}
                   // type="reset"
                   variant="outline"
                   onClick={storeModal.onClose}>
                   Cancelar
                 </Button>
-                <Button type="submit">Continuar</Button>
+                <Button disabled={loading} type="submit">
+                  Continuar
+                </Button>
               </div>
             </form>
           </Form>
