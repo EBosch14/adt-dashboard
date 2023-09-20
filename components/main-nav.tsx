@@ -13,6 +13,11 @@ export function MainNav({
 
   const routes = [
     {
+      href: `/${params.storeId}`,
+      label: "general",
+      active: pathname === `/${params.storeId}`,
+    },
+    {
       href: `/${params.storeId}/settings`,
       label: "ajustes",
       active: pathname === `/${params.storeId}/settings`,
@@ -21,16 +26,6 @@ export function MainNav({
       href: `/${params.storeId}/products`,
       label: "productos",
       active: pathname === `/${params.storeId}/products`,
-    },
-    {
-      href: `/${params.storeId}/settings`,
-      label: "Ajustes",
-      active: pathname === `/${params.storeId}/settings`,
-    },
-    {
-      href: `/${params.storeId}/settings`,
-      label: "Ajustes",
-      active: pathname === `/${params.storeId}/settings`,
     },
   ];
 

@@ -80,7 +80,7 @@ export const StoreModal = () => {
                     <FormControl>
                       <Input
                         disabled={loading}
-                        placeholder="Depósito para Gamers"
+                        placeholder="Nombre del deposito..."
                         {...field}
                       />
                     </FormControl>
