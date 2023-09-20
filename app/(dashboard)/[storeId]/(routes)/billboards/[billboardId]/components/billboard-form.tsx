@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useOrigin } from "@/hooks/use-origin";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Store } from "@prisma/client";
+import { Billboard } from "@prisma/client";
 import axios from "axios";
 import { TrashIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -25,12 +25,8 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
 
-interface SettingsFormProps {
-  initialData: Store;
-}
-
 const FormSchema = z.object({
-  name: z
+  label: z
     .string()
     .min(1, {
       message: "El nombre debe contener al menos 1 caracter.",
@@ -38,11 +34,20 @@ const FormSchema = z.object({
     .max(25, {
       message: "El nombre no debe contener más de 25 caracteres.",
     }),
+  imageUrl: z
+    .string({ required_error: "El campo imageUrl es requerido." })
+    .url({ message: "El cmapo debe ser una url." }),
 });
 
-type SettingsFormInput = z.infer<typeof FormSchema>;
+type BillboardFormInput = z.infer<typeof FormSchema>;
 
-export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
+interface BillboardFormProps {
+  initialData: Billboard | null;
+}
+
+export const BillboardForm: React.FC<BillboardFormProps> = ({
+  initialData,
+}) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -50,12 +55,25 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
   const router = useRouter();
   const origin = useOrigin();
 
-  const form = useForm<SettingsFormInput>({
+  const title = initialData ? "Editar panel" : "Crear panel";
+  const description = initialData ? "Editar un panel" : "Crear un nuevo panel";
+  const toastMessage = initialData
+    ? "Panel actualizado correctamente."
+    : "Panel creado correctamente.";
+  const action = initialData ? "Guardar cambios." : "Crear";
+  const toastError = initialData
+    ? "Ups! Algo salio mal, no se pudo actualizar el panel."
+    : "Ups! Algo salio mal, no se pudo crear el panel.";
+
+  const form = useForm<BillboardFormInput>({
     resolver: zodResolver(FormSchema),
-    defaultValues: initialData,
+    defaultValues: initialData || {
+      label: "",
+      imageUrl: "",
+    },
   });
 
-  const onSubmit = async (data: SettingsFormInput) => {
+  const onSubmit = async (data: BillboardFormInput) => {
     try {
       setLoading(true);
       await axios.patch(`/api/stores/${params.storeId}`, data);
@@ -74,9 +92,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
       await axios.delete(`/api/stores/${params.storeId}`);
       router.refresh();
       router.push("/");
-      toast.success("Deposito eliminado correctamente");
+      toast.success(toastMessage);
     } catch (error) {
-      toast.error("Ups! Algo salio mal, no se pudo eliminar el deposito.");
+      toast.error(toastError);
     } finally {
       setLoading(false);
       setOpen(false);
@@ -92,17 +110,16 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
         loading={loading}
       />
       <div className="flex items-center justify-between">
-        <Heading
-          title="Ajustes"
-          description="Gestionar las preferencias del depósito"
-        />
-        <Button
-          disabled={loading}
-          variant="destructive"
-          size="icon"
-          onClick={() => setOpen(true)}>
-          <TrashIcon className="h-4 w-4" />
-        </Button>
+        <Heading title={title} description={description} />
+        {initialData && (
+          <Button
+            disabled={loading}
+            variant="destructive"
+            size="icon"
+            onClick={() => setOpen(true)}>
+            <TrashIcon className="h-4 w-4" />
+          </Button>
+        )}
       </div>
       <Separator />
       <Form {...form}>
@@ -112,14 +129,14 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
           <div className="grid grid-cols-3 gap-8">
             <FormField
               control={form.control}
-              name="name"
+              name="label"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nombre</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Nombre del deposito"
+                      placeholder="Nombre del panel"
                       {...field}
                     />
                   </FormControl>
@@ -129,16 +146,11 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
             />
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
-            Guardar cambios
+            {action}
           </Button>
         </form>
       </Form>
       <Separator />
-      <ApiAlert
-        title="NEXT_PUBLIC_API_URL"
-        description={`${origin}/api/${params.storeId}`}
-        variant="public"
-      />
     </>
   );
 };
