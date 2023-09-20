@@ -4,8 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { PlusIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { BillboardColumn, columns } from "./columns";
+import { Separator } from "@/components/ui/separator";
+import { DataTable } from "@/components/ui/data-table";
 
-export const BillboardClient = () => {
+interface BillboardClientProps {
+  data: BillboardColumn[];
+}
+
+export const BillboardClient: React.FC<BillboardClientProps> = ({ data }) => {
   const router = useRouter();
   const params = useParams();
 
@@ -13,7 +20,7 @@ export const BillboardClient = () => {
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title="Paneles (0)"
+          title={`Paneles (${data?.length})`}
           description="Administra los paneles para tu depósito"
         />
         <Button
@@ -22,6 +29,8 @@ export const BillboardClient = () => {
           Agregar
         </Button>
       </div>
+      <Separator />
+      <DataTable searchKey="label" columns={columns} data={data} />
     </>
   );
 };
