@@ -74,9 +74,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
       await axios.delete(`/api/stores/${params.storeId}`);
       router.refresh();
       router.push("/");
-      toast.success("Deposito eliminado correctamente");
+      toast.success("Depósito eliminado exitosamente");
     } catch (error) {
-      toast.error("Ups! Algo salio mal, no se pudo eliminar el deposito.");
+      toast.error("Ups! Algo salio mal, no se pudo eliminar el depósito.");
     } finally {
       setLoading(false);
       setOpen(false);

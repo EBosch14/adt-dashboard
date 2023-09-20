@@ -30,14 +30,14 @@ const FormSchema = z.object({
   label: z
     .string()
     .min(1, {
-      message: "El nombre debe contener al menos 1 caracter.",
+      message: "El nombre debe contener al menos 1 caracter",
     })
     .max(25, {
-      message: "El nombre no debe contener más de 25 caracteres.",
+      message: "El nombre no debe contener más de 25 caracteres",
     }),
   imageUrl: z
-    .string({ required_error: "El campo imageUrl es requerido." })
-    .url({ message: "El cmapo debe ser una url." }),
+    .string({ required_error: "El campo imageUrl es requerido" })
+    .url({ message: "El campo debe ser una url" }),
 });
 
 type BillboardFormInput = z.infer<typeof FormSchema>;
@@ -61,7 +61,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
   const toastMessage = initialData
     ? "Panel actualizado correctamente."
     : "Panel creado correctamente.";
-  const action = initialData ? "Guardar cambios." : "Crear";
+  const action = initialData ? "Guardar cambios" : "Crear";
   const toastError = initialData
     ? "Ups! Algo salio mal, no se pudo actualizar el panel."
     : "Ups! Algo salio mal, no se pudo crear el panel.";
@@ -77,11 +77,19 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
   const onSubmit = async (data: BillboardFormInput) => {
     try {
       setLoading(true);
-      await axios.patch(`/api/stores/${params.storeId}`, data);
+      if (initialData) {
+        await axios.patch(
+          `/api/${params.storeId}/billboards/${params.billboardId}`,
+          data
+        );
+      } else {
+        await axios.post(`/api/${params.storeId}/billboards`, data);
+      }
       router.refresh();
-      toast.success("Deposito actualizado correctamente");
+      router.push(`/${params.storeId}/billboards`);
+      toast.success(toastMessage);
     } catch (error) {
-      toast.error("Ups! Algo salió mal al editar el depósito.");
+      toast.error(toastError);
     } finally {
       setLoading(false);
     }
@@ -90,12 +98,16 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/stores/${params.storeId}`);
+      await axios.delete(
+        `/api/${params.storeId}/billboards/${params.billboardId}`
+      );
       router.refresh();
-      router.push("/");
-      toast.success(toastMessage);
+      router.push(`/${params.storeId}/billboards`);
+      toast.success("Panel eliminado exitosamente");
     } catch (error) {
-      toast.error(toastError);
+      toast.error(
+        "Ups! Algo salio mal, no se pudo eliminar el panel seleccionado."
+      );
     } finally {
       setLoading(false);
       setOpen(false);
