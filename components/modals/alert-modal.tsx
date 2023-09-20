@@ -29,8 +29,8 @@ export const AlertModal: React.FC<AlertModalProps> = ({
 
   return (
     <Modal
-      title="Seguro que deseas  eliminar el deposito?"
-      description="No se podra deshacer esta accion"
+      title="Seguro que deseas eliminar?"
+      description="No se podra deshacer esta acción"
       isOpen={isOpen}
       onClose={onClose}>
       <div className="pt-6 space-x-2 flex items-center justify-end w-full">
