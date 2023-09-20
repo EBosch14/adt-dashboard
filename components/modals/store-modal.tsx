@@ -22,9 +22,14 @@ import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 
 const FormSchema = z.object({
-  name: z.string().min(1, {
-    message: "El nombre debe contener al menos 1 caracter.",
-  }),
+  name: z
+    .string()
+    .min(1, {
+      message: "El nombre debe contener al menos 1 caracter.",
+    })
+    .max(25, {
+      message: "El nombre no debe contener más de 25 caracteres.",
+    }),
 });
 
 type FormInput = z.infer<typeof FormSchema>;
@@ -46,7 +51,8 @@ export const StoreModal = () => {
 
       const response = await axios.post("/api/stores", values);
 
-      toast.success("Depósito creado exitosamente.");
+      window.location.assign(`/${response.data.id}`);
+      // toast.success("Depósito creado exitosamente.");
     } catch (error) {
       toast.error("Ups! Algo salió mal al crear el depósito.");
     } finally {
@@ -56,10 +62,11 @@ export const StoreModal = () => {
 
   return (
     <Modal
-      title="Crear depositó"
+      title="Crear depósito"
       description="Agregar un nuevo depósito para gestionar nuevos productos y categorías"
       isOpen={storeModal.isOpen}
-      onClose={storeModal.onClose}>
+      onClose={storeModal.onClose}
+      resetForm={form.reset}>
       <div>
         <div className="space-y-4 py-2 pb-0">
           <Form {...form}>
@@ -84,9 +91,12 @@ export const StoreModal = () => {
               <div className="pt-6 space-x-2 flex items-center justify-end w-full">
                 <Button
                   disabled={loading}
-                  // type="reset"
+                  type="reset"
                   variant="outline"
-                  onClick={storeModal.onClose}>
+                  onClick={() => {
+                    storeModal.onClose();
+                    form.reset();
+                  }}>
                   Cancelar
                 </Button>
                 <Button disabled={loading} type="submit">

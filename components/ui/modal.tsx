@@ -14,6 +14,7 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children?: React.ReactNode;
+  resetForm: () => void;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -21,10 +22,14 @@ export const Modal: React.FC<ModalProps> = ({
   description,
   isOpen,
   onClose,
+  resetForm,
   children,
 }) => {
   const onChange = (open: boolean) => {
-    if (!open) onClose();
+    if (!open) {
+      onClose();
+      resetForm();
+    }
   };
   return (
     <Dialog open={isOpen} onOpenChange={onChange}>
