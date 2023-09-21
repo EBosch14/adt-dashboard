@@ -28,9 +28,9 @@ export function MainNav({
       active: pathname === `/${params.storeId}/settings`,
     },
     {
-      href: `/${params.storeId}/products`,
-      label: "productos",
-      active: pathname === `/${params.storeId}/products`,
+      href: `/${params.storeId}/categories`,
+      label: "categorías",
+      active: pathname === `/${params.storeId}/categories`,
     },
   ];
 

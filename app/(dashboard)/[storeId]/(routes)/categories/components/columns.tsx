@@ -4,13 +4,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { CellAction } from "./cell-action";
 
-export type BillboardColumn = {
+export type CategoriesColumn = {
   id: string;
-  label: string;
+  name: string;
+  billboardLabel: string;
   createdAt: string;
 };
 
-export const columns: ColumnDef<BillboardColumn>[] = [
+export const columns: ColumnDef<CategoriesColumn>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -31,8 +32,13 @@ export const columns: ColumnDef<BillboardColumn>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "label",
+    accessorKey: "name",
     header: "Nombre",
+  },
+  {
+    accessorKey: "billboardLabel",
+    header: "Panel",
+    cell: ({ row }) => row.original.billboardLabel,
   },
   {
     accessorKey: "createdAt",
