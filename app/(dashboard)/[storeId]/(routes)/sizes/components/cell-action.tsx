@@ -7,7 +7,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CategoriesColumn } from "./columns";
+import { SizeColumn } from "./columns";
 import { Button } from "@/components/ui/button";
 import { CopyIcon, EditIcon, MoreHorizontal, TrashIcon } from "lucide-react";
 import toast from "react-hot-toast";
@@ -17,7 +17,7 @@ import axios from "axios";
 import { AlertModal } from "@/components/modals/alert-modal";
 
 interface CellActionProps {
-  data: CategoriesColumn;
+  data: SizeColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -34,12 +34,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/categories/${data.id}`);
+      await axios.delete(`/api/${params.storeId}/sizes/${data.id}`);
       router.refresh();
-      toast.success("Categoria eliminada exitosamente");
+      toast.success("Tamanio eliminado exitosamente");
     } catch (error) {
       toast.error(
-        "Ups! Algo salio mal, no se pudo eliminar la categoria seleccionado."
+        "Ups! Algo salio mal, no se pudo eliminar el tamanio seleccionado."
       );
     } finally {
       setLoading(false);
@@ -72,9 +72,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() =>
-              router.push(`/${params.storeId}/categories/${data.id}`)
-            }>
+            onClick={() => router.push(`/${params.storeId}/sizes/${data.id}`)}>
             <EditIcon className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>

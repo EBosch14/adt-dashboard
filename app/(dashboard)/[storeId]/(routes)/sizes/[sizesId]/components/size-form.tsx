@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertModal } from "@/components/modals/alert-modal";
+import { ApiAlert } from "@/components/ui/api-alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,17 +12,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Heading } from "@/components/ui/heading";
+import { ImageUpload } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-  SelectItem,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useOrigin } from "@/hooks/use-origin";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Billboard, Category } from "@prisma/client";
+import { Size } from "@prisma/client";
 import axios from "axios";
 import { TrashIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -39,61 +35,64 @@ const FormSchema = z.object({
     .max(25, {
       message: "El nombre no debe contener más de 25 caracteres",
     }),
-  billboardId: z.string({
-    required_error: "El campo billboardId es requerido",
-  }),
+  value: z
+    .string()
+    .min(1, {
+      message: "El nombre debe contener al menos 1 caracter",
+    })
+    .max(25, {
+      message: "El nombre no debe contener más de 25 caracteres",
+    }),
 });
 
-type CategoryFormInput = z.infer<typeof FormSchema>;
+type SizeFormInput = z.infer<typeof FormSchema>;
 
-interface CategoryFormProps {
-  initialData: Category | null;
-  billboards: Billboard[];
+interface SizeFormProps {
+  initialData: Size | null;
 }
 
-export const CategoryForm: React.FC<CategoryFormProps> = ({
-  initialData,
-  billboards,
-}) => {
+export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const params = useParams();
   const router = useRouter();
+  const origin = useOrigin();
+  console.log(params);
 
-  const title = initialData ? "Editar categoría" : "Crear categoría";
+  const title = initialData ? "Editar tamanio" : "Crear tramanio";
   const description = initialData
-    ? "Editar una categoría"
-    : "Crear una nueva categoría";
+    ? "Editar un tamanio"
+    : "Crear un nuevo tamanio";
   const toastMessage = initialData
-    ? "categoría actualizada correctamente."
-    : "categoría creada correctamente.";
+    ? "Tamanio actualizado correctamente."
+    : "Tamanio creado correctamente.";
   const action = initialData ? "Guardar cambios" : "Crear";
   const toastError = initialData
-    ? "Ups! Algo salio mal, no se pudo actualizar la categoría."
-    : "Ups! Algo salio mal, no se pudo crear la categoría.";
+    ? "Ups! Algo salio mal, no se pudo actualizar el tamanio."
+    : "Ups! Algo salio mal, no se pudo crear el tamanio.";
 
-  const form = useForm<CategoryFormInput>({
+  const form = useForm<SizeFormInput>({
     resolver: zodResolver(FormSchema),
     defaultValues: initialData || {
       name: "",
-      billboardId: "",
+      value: "",
     },
   });
 
-  const onSubmit = async (data: CategoryFormInput) => {
+  const onSubmit = async (data: SizeFormInput) => {
     try {
       setLoading(true);
       if (initialData) {
         await axios.patch(
-          `/api/${params.storeId}/categories/${params.categoryId}`,
+          `/api/${params.storeId}/sizes/${params.sizesId}`,
           data
         );
       } else {
-        await axios.post(`/api/${params.storeId}/categories`, data);
+        await axios.post(`/api/${params.storeId}/sizes`, data);
       }
       router.refresh();
-      router.push(`/${params.storeId}/categories`);
+      router.push(`/${params.storeId}/sizes`);
       toast.success(toastMessage);
     } catch (error) {
       toast.error(toastError);
@@ -105,15 +104,13 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(
-        `/api/${params.storeId}/categories/${params.categoryId}`
-      );
+      await axios.delete(`/api/${params.storeId}/sizes/${params.sizesId}`);
       router.refresh();
-      router.push(`/${params.storeId}/categories`);
-      toast.success("Categoría eliminada exitosamente");
+      router.push(`/${params.storeId}/sizes`);
+      toast.success("Tamanio eliminado exitosamente");
     } catch (error) {
       toast.error(
-        "Ups! Algo salio mal, no se pudo eliminar la categoría seleccionada."
+        "Ups! Algo salio mal, no se pudo eliminar el tamanio seleccionado."
       );
     } finally {
       setLoading(false);
@@ -156,7 +153,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Nombre de la categoría"
+                      placeholder="Nombre del tamanio"
                       {...field}
                     />
                   </FormControl>
@@ -166,31 +163,17 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="billboardId"
+              name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Panel</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Selecciona un panel"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {billboards.map((billboard) => (
-                        <SelectItem key={billboard.id} value={billboard.id}>
-                          {billboard.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Valor</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Valor del tamanio"
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

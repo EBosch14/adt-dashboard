@@ -23,14 +23,24 @@ export function MainNav({
       active: pathname === `/${params.storeId}/billboards`,
     },
     {
-      href: `/${params.storeId}/settings`,
-      label: "ajustes",
-      active: pathname === `/${params.storeId}/settings`,
-    },
-    {
       href: `/${params.storeId}/categories`,
       label: "categorías",
       active: pathname === `/${params.storeId}/categories`,
+    },
+    {
+      href: `/${params.storeId}/sizes`,
+      label: "tamanios",
+      active: pathname === `/${params.storeId}/sizes`,
+    },
+    {
+      href: `/${params.storeId}/colores`,
+      label: "Colores",
+      active: pathname === `/${params.storeId}/color`,
+    },
+    {
+      href: `/${params.storeId}/settings`,
+      label: "ajustes",
+      active: pathname === `/${params.storeId}/settings`,
     },
   ];
 
