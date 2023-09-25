@@ -60,17 +60,17 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
   const origin = useOrigin();
   console.log(params);
 
-  const title = initialData ? "Editar tamanio" : "Crear tramanio";
+  const title = initialData ? "Editar capacidad" : "Crear capacidad";
   const description = initialData
-    ? "Editar un tamanio"
-    : "Crear un nuevo tamanio";
+    ? "Editar una capacidad"
+    : "Crear una nueva capacidad";
   const toastMessage = initialData
-    ? "Tamanio actualizado correctamente."
-    : "Tamanio creado correctamente.";
+    ? "Capacidad actualizada correctamente."
+    : "Capacidad creada correctamente.";
   const action = initialData ? "Guardar cambios" : "Crear";
   const toastError = initialData
-    ? "Ups! Algo salio mal, no se pudo actualizar el tamanio."
-    : "Ups! Algo salio mal, no se pudo crear el tamanio.";
+    ? "Ups! Algo salio mal, no se pudo actualizar la capacidad."
+    : "Ups! Algo salio mal, no se pudo crear la capacidad.";
 
   const form = useForm<SizeFormInput>({
     resolver: zodResolver(FormSchema),
@@ -107,10 +107,10 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
       await axios.delete(`/api/${params.storeId}/sizes/${params.sizesId}`);
       router.refresh();
       router.push(`/${params.storeId}/sizes`);
-      toast.success("Tamanio eliminado exitosamente");
+      toast.success("Capacidad eliminada exitosamente");
     } catch (error) {
       toast.error(
-        "Ups! Algo salio mal, no se pudo eliminar el tamanio seleccionado."
+        "Ups! Algo salio mal, no se pudo eliminar la capacidad seleccionada"
       );
     } finally {
       setLoading(false);
@@ -153,7 +153,7 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Nombre del tamanio"
+                      placeholder="Nombre de la capacidad"
                       {...field}
                     />
                   </FormControl>
@@ -170,7 +170,7 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Valor del tamanio"
+                      placeholder="Valor de la capacidad"
                       {...field}
                     />
                   </FormControl>

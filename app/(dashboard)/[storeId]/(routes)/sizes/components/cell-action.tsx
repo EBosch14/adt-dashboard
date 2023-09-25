@@ -36,10 +36,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       setLoading(true);
       await axios.delete(`/api/${params.storeId}/sizes/${data.id}`);
       router.refresh();
-      toast.success("Tamanio eliminado exitosamente");
+      toast.success("Capacidad eliminada exitosamente");
     } catch (error) {
       toast.error(
-        "Ups! Algo salio mal, no se pudo eliminar el tamanio seleccionado."
+        "Ups! Algo salio mal, no se pudo eliminar la capacidad seleccionada"
       );
     } finally {
       setLoading(false);

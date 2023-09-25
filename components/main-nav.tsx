@@ -29,7 +29,7 @@ export function MainNav({
     },
     {
       href: `/${params.storeId}/sizes`,
-      label: "tamanios",
+      label: "capacidades",
       active: pathname === `/${params.storeId}/sizes`,
     },
     {
