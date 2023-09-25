@@ -24,7 +24,7 @@ export const ColorClient: React.FC<ColorClientProps> = ({ data }) => {
           title={`Colores (${data?.length})`}
           description="Administra los colores para tu depósito"
         />
-        <Button onClick={() => router.push(`/${params.storeId}/colores/new`)}>
+        <Button onClick={() => router.push(`/${params.storeId}/colors/new`)}>
           <PlusIcon className="mr-2 h-4 w-4" />
           Agregar
         </Button>

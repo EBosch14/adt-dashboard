@@ -34,7 +34,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/colores/${data.id}`);
+      await axios.delete(`/api/${params.storeId}/colors/${data.id}`);
       router.refresh();
       toast.success("Color eliminado exitosamente");
     } catch (error) {
@@ -72,9 +72,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() =>
-              router.push(`/${params.storeId}/colores/${data.id}`)
-            }>
+            onClick={() => router.push(`/${params.storeId}/colors/${data.id}`)}>
             <EditIcon className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
