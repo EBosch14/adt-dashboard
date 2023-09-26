@@ -36,10 +36,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       setLoading(true);
       await axios.delete(`/api/${params.storeId}/products/${data.id}`);
       router.refresh();
-      toast.success("Panel eliminado exitosamente");
+      toast.success("Producto eliminado exitosamente");
     } catch (error) {
       toast.error(
-        "Ups! Algo salio mal, no se pudo eliminar el panel seleccionado."
+        "Ups! Algo salio mal, no se pudo eliminar el producto seleccionado."
       );
     } finally {
       setLoading(false);
