@@ -12,12 +12,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Heading } from "@/components/ui/heading";
-import { ImageUpload } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useOrigin } from "@/hooks/use-origin";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Color, Size } from "@prisma/client";
+import { Color } from "@prisma/client";
 import axios from "axios";
 import { TrashIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -35,7 +34,7 @@ const FormSchema = z.object({
     .max(25, {
       message: "El nombre no debe contener más de 25 caracteres",
     }),
-  value: z.string().min(4).regex(/^#/, {
+  value: z.string().regex(/^#[a-fA-F0-9]{6}$/, {
     message: "El valor debe ser un codigo hexadecimal válido",
   }),
 });
@@ -52,7 +51,6 @@ export const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
 
   const params = useParams();
   const router = useRouter();
-  const origin = useOrigin();
 
   const title = initialData ? "Editar color" : "Crear color";
   const description = initialData ? "Editar un color" : "Crear un nuevo color";
@@ -161,14 +159,13 @@ export const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
                     <div className="flex items-center gap-x-4">
+                      <Input disabled={loading} {...field} className="w-24" />
                       <Input
+                        type="color"
                         disabled={loading}
                         placeholder="Valor del color"
                         {...field}
-                      />
-                      <div
-                        className="border p-4 rounded-full"
-                        style={{ backgroundColor: field.value }}
+                        className="w-10 p-1"
                       />
                     </div>
                   </FormControl>
