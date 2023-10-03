@@ -36,8 +36,8 @@ const FormSchema = z.object({
       message: "El nombre no debe contener más de 25 caracteres",
     }),
   imageUrl: z
-    .string({ required_error: "El campo imageUrl es requerido" })
-    .url({ message: "El campo debe ser una url" }),
+    .string({ required_error: "Se debe seleccionar una imagen." })
+    .url(),
 });
 
 type BillboardFormInput = z.infer<typeof FormSchema>;
@@ -151,6 +151,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
                     disable={loading}
                     onChange={(url) => field.onChange(url)}
                     onRemove={() => field.onChange("")}
+                    multipleFiles={false}
                   />
                 </FormControl>
                 <FormMessage />

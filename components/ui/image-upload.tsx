@@ -8,9 +8,10 @@ import { CldUploadWidget } from "next-cloudinary";
 
 interface ImageUploadProps {
   disable?: boolean;
+  value: string[];
+  multipleFiles?: boolean;
   onChange: (value: string) => void;
   onRemove: (value: string) => void;
-  value: string[];
 }
 
 export const ImageUpload: React.FC<ImageUploadProps> = ({
@@ -18,6 +19,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   onRemove,
   value,
   disable,
+  multipleFiles,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -26,6 +28,8 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   }, []);
 
   const onUpload = (result: any) => {
+    console.log(result);
+
     onChange(result.info.secure_url);
   };
 
@@ -53,10 +57,17 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           </div>
         ))}
       </div>
-      <CldUploadWidget onUpload={onUpload} uploadPreset="bihdrzfq">
-        {({ open }) => {
+      <CldUploadWidget
+        onUpload={onUpload}
+        uploadPreset="bihdrzfq"
+        options={{
+          multiple: multipleFiles ? true : false,
+          maxFiles: multipleFiles ? 10 : 1,
+          folder: "ADT",
+        }}>
+        {(options) => {
           const onClick = () => {
-            open();
+            options.open();
           };
           return (
             <Button
