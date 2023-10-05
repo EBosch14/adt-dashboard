@@ -34,7 +34,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/categories/${data.id}`);
+      await axios.delete(`/api/${params.store_id}/categories/${data.id}`);
       router.refresh();
       toast.success("Categoria eliminada exitosamente");
     } catch (error) {
@@ -73,7 +73,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuItem
             className="cursor-pointer"
             onClick={() =>
-              router.push(`/${params.storeId}/categories/${data.id}`)
+              router.push(`/${params.store_id}/categories/${data.id}`)
             }>
             <EditIcon className="mr-2 h-4 w-4" />
             Editar

@@ -45,6 +45,8 @@ export async function POST(
       provider_id,
       is_archived,
       images,
+      brand,
+      model,
     } = result.data;
 
     const product = await prismadb.product.create({
@@ -57,7 +59,9 @@ export async function POST(
         size_id,
         provider_id,
         is_archived,
-        store_id: "store",
+        model,
+        brand,
+        store_id: params.store_id,
         images: {
           createMany: {
             data: [...images.map((image: { url: string }) => image)],

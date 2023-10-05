@@ -45,7 +45,7 @@ export const columns: ColumnDef<ProductColumn>[] = [
   },
   {
     accessorKey: "stock",
-    header: "cantidad disponible",
+    header: "Cantidad disponible",
   },
   {
     accessorKey: "size",

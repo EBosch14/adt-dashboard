@@ -98,6 +98,8 @@ model Product {
   category_id     String
   size_id         String
   provider_id     String
+  model           String
+  brand           String
   images          Image[]
   products_orders Product_Order[]
   store           Store           @relation("StoreToProduct", fields: [store_id], references: [id])

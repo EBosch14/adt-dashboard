@@ -70,6 +70,8 @@ export async function PATCH(
       provider_id,
       size_id,
       images,
+      brand,
+      model,
       is_archived,
     } = result.data;
 
@@ -83,6 +85,8 @@ export async function PATCH(
         category_id,
         provider_id,
         size_id,
+        model,
+        brand,
         is_archived,
         store_id: params.store_id,
         images: {

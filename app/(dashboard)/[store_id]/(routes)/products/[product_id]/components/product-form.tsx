@@ -29,7 +29,7 @@ import { Category, Image, Product, Size, Provider } from "@prisma/client";
 import axios from "axios";
 import { TrashIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
@@ -44,13 +44,15 @@ const FormSchema = z.object({
       message: "El nombre no debe contener más de 25 caracteres",
     })
     .trim(),
-  images: z.array(
-    z
-      .object({
-        url: z.string().trim(),
-      })
-      .strict()
-  ),
+  images: z
+    .array(
+      z
+        .object({
+          url: z.string().trim(),
+        })
+        .strict()
+    )
+    .min(1, { message: "Se requiere una imagen para crear el producto" }),
   price: z.coerce.number().min(1),
   stock: z.coerce.number().int().nonnegative(),
   description: z.string().min(10).max(5000).trim(),
@@ -58,6 +60,8 @@ const FormSchema = z.object({
   provider_id: z.string().min(1).trim(),
   size_id: z.string().min(1).trim(),
   is_archived: z.boolean().default(false).optional(),
+  model: z.string().min(1).trim(),
+  brand: z.string().min(1).trim(),
 });
 
 type ProductFormInput = z.infer<typeof FormSchema>;
@@ -116,22 +120,27 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           provider_id: "",
           size_id: "",
           images: [],
+          model: "",
+          brand: "",
         },
   });
+
+  const selectedCategory = form.watch("category_id");
+  const sizes = categories.find((cat) => cat.id === selectedCategory)?.sizes;
 
   const onSubmit = async (data: ProductFormInput) => {
     try {
       setLoading(true);
       if (initialData) {
         await axios.patch(
-          `/api/${params.storeId}/products/${params.productId}`,
+          `/api/${params.storeId}/products/${params.product_id}`,
           data
         );
       } else {
-        await axios.post(`/api/${params.storeId}/products`, data);
+        await axios.post(`/api/${params.store_id}/products`, data);
       }
       router.refresh();
-      router.push(`/${params.storeId}/products`);
+      router.push(`/${params.store_id}/products`);
       toast.success(toastMessage);
     } catch (error) {
       toast.error(toastError);
@@ -143,9 +152,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
+      await axios.delete(
+        `/api/${params.store_id}/products/${params.product_id}`
+      );
       router.refresh();
-      router.push(`/${params.storeId}/products`);
+      router.push(`/${params.store_id}/products`);
       toast.success("Producto eliminado exitosamente");
     } catch (error) {
       toast.error(
@@ -301,7 +312,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 <FormItem>
                   <FormLabel>Capacidades</FormLabel>
                   <Select
-                    disabled={loading || !form.getValues().category_id}
+                    disabled={loading || !sizes}
                     onValueChange={field.onChange}
                     value={field.value}
                     defaultValue={field.value}>
@@ -314,13 +325,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {categories
-                        .find((cat) => cat.id === form.getValues().category_id)
-                        ?.sizes.map((size) => (
-                          <SelectItem key={size.id} value={size.id}>
-                            {size.name}
-                          </SelectItem>
-                        ))}
+                      {sizes?.map((size) => (
+                        <SelectItem key={size.id} value={size.id}>
+                          {size.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -354,6 +363,40 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="model"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Modelo</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Nombre del modelo"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="brand"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Marca</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Nombre de la marca"
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
