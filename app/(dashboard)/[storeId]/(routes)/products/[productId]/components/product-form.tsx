@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import { useOrigin } from "@/hooks/use-origin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Category, Color, Image, Product, Size } from "@prisma/client";
@@ -43,18 +44,21 @@ const FormSchema = z.object({
     })
     .max(25, {
       message: "El nombre no debe contener más de 25 caracteres",
-    }),
+    })
+    .trim(),
   images: z.array(
     z
       .object({
-        url: z.string(),
+        url: z.string().trim(),
       })
       .strict()
   ),
   price: z.coerce.number().min(1),
-  categoryId: z.string().min(1),
-  colorId: z.string().min(1),
-  sizeId: z.string().min(1),
+  stock: z.coerce.number().int().nonnegative(),
+  description: z.string().min(10).max(5000).trim(),
+  categoryId: z.string().min(1).trim(),
+  colorId: z.string().min(1).trim(),
+  sizeId: z.string().min(1).trim(),
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional(),
 });
@@ -83,7 +87,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 
   const params = useParams();
   const router = useRouter();
-  const origin = useOrigin();
 
   const title = initialData ? "Editar producto" : "Crear producto";
   const description = initialData
@@ -108,6 +111,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           name: "",
           images: [],
           price: 0,
+          stock: 0,
+          description: "",
           categoryId: "",
           colorId: "",
           sizeId: "",
@@ -222,24 +227,48 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Precio</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      disabled={loading}
-                      placeholder="9.99"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex flex-row gap-10 space-y-0 justify-start">
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem className="w-28">
+                    <FormLabel>Precio</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        disabled={loading}
+                        placeholder="9.99"
+                        {...field}
+                        // onChange={() => {
+                        //   if (field.value <= -1) return field.onChange(0);
+                        //   return field.onChange(field.value);
+                        // }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="stock"
+                render={({ field }) => (
+                  <FormItem className="w-28">
+                    <FormLabel>Stock</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        disabled={loading}
+                        placeholder="55"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="categoryId"
@@ -335,9 +364,26 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             />
             <FormField
               control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem className="row-span-2">
+                  <FormLabel>Descripción</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      className="h-full resize-none"
+                      placeholder="Ingresa la descripción de tu producto..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="isFeatured"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem className="place-self-start flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
@@ -357,7 +403,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               control={form.control}
               name="isArchived"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem className="place-self-start flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
                     <Checkbox
                       checked={field.value}

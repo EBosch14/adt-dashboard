@@ -11,6 +11,8 @@ export async function POST(
     const {
       name,
       price,
+      stock,
+      description,
       categoryId,
       sizeId,
       colorId,
@@ -51,6 +53,14 @@ export async function POST(
       return new NextResponse("Color id is required", { status: 400 });
     }
 
+    if (!stock) {
+      return new NextResponse("Stock is required", { status: 400 });
+    }
+
+    if (!description) {
+      return new NextResponse("Description is required", { status: 400 });
+    }
+
     const storeByUserId = await prismadb.store.findFirst({
       where: {
         id: params.storeId,
@@ -66,6 +76,8 @@ export async function POST(
       data: {
         name,
         price,
+        stock,
+        description,
         categoryId,
         sizeId,
         colorId,
