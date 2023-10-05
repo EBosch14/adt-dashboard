@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
+  provider     = "postgresql"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
@@ -25,16 +25,16 @@ model Store {
 }
 
 model Provider {
-  id         String     @id @default(uuid())
+  id         String    @id @default(uuid())
   name       String
   phone      String
   email      String
   store_id   String
   products   Product[]
-  categories Category[]
-  store      Store      @relation("StoreToProvider", fields: [store_id], references: [id])
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
+  // categories Category[]
+  store      Store     @relation("StoreToProvider", fields: [store_id], references: [id])
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
 
   @@index([store_id])
 }
@@ -59,19 +59,19 @@ model Client {
 }
 
 model Category {
-  id          String    @id @default(uuid())
-  name        String
-  store_id    String
-  provider_id String
-  sizes       Size[]    @relation("CategoryToSize")
-  products    Product[] @relation("CategoryToProduct")
-  provider    Provider  @relation(fields: [provider_id], references: [id])
-  store       Store     @relation("StoreToCategory", fields: [store_id], references: [id])
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @updatedAt
+  id         String    @id @default(uuid())
+  name       String
+  store_id   String
+  // provider_id String
+  sizes      Size[]    @relation("CategoryToSize")
+  products   Product[] @relation("CategoryToProduct")
+  // provider    Provider  @relation(fields: [provider_id], references: [id])
+  store      Store     @relation("StoreToCategory", fields: [store_id], references: [id])
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  // @@index([provider_id])
 
   @@index([store_id])
-  @@index([provider_id])
 }
 
 model Size {
@@ -88,24 +88,24 @@ model Size {
 }
 
 model Product {
-  id              String            @id @default(uuid())
+  id              String          @id @default(uuid())
   name            String
   price           Decimal
   stock           Int
   description     String?
-  isArchived      Boolean           @default(false)
+  is_archived     Boolean         @default(false)
   store_id        String
   category_id     String
   size_id         String
   provider_id     String
   images          Image[]
-  products_orders PRODUCTS_ORDERS[]
-  store           Store             @relation("StoreToProduct", fields: [store_id], references: [id])
-  category        Category          @relation("CategoryToProduct", fields: [category_id], references: [id])
-  size            Size              @relation(fields: [size_id], references: [id])
-  created_at      DateTime          @default(now())
-  updated_at      DateTime          @updatedAt
-  provider        Provider          @relation(fields: [provider_id], references: [id])
+  products_orders Product_Order[]
+  store           Store           @relation("StoreToProduct", fields: [store_id], references: [id])
+  category        Category        @relation("CategoryToProduct", fields: [category_id], references: [id])
+  size            Size            @relation(fields: [size_id], references: [id])
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+  provider        Provider        @relation(fields: [provider_id], references: [id])
 
   @@index([store_id])
   @@index([category_id])
@@ -125,21 +125,21 @@ model Image {
 }
 
 model Order {
-  id              String            @id @default(uuid())
+  id              String          @id @default(uuid())
   store_id        String
-  products_orders PRODUCTS_ORDERS[]
-  is_paid         Boolean           @default(false)
-  phone           String            @default("")
-  address         String            @default("")
-  created_at      DateTime          @default(now())
-  updated_at      DateTime          @updatedAt
-  store           Store             @relation("StoreToOrder", fields: [store_id], references: [id])
+  products_orders Product_Order[]
+  is_paid         Boolean         @default(false)
+  phone           String          @default("")
+  address         String          @default("")
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+  store           Store           @relation("StoreToOrder", fields: [store_id], references: [id])
 
   @@index([store_id])
 }
 
 //INTERMEDIATE TABLE
-model PRODUCTS_ORDERS {
+model Product_Order {
   id         String  @id @default(uuid())
   order_id   String
   product_id String
