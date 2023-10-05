@@ -4,42 +4,38 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   _req: Request,
-  { params }: { params: { categoryId: string } }
+  { params }: { params: { category_id: string } }
 ) {
   try {
-    if (!params.categoryId) {
+    if (!params.category_id) {
       return new NextResponse("Categoty id is required", { status: 400 });
     }
 
     const category = await prismadb.category.findUnique({
-      where: { id: params.categoryId },
+      where: { id: params.category_id },
     });
 
     return NextResponse.json(category);
   } catch (error) {
-    console.log("[BILLBOARD_GET]", error);
+    console.log("[CATEGORY_GET]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { storeId: string; categoryId: string } }
+  { params }: { params: { store_id: string; category_id: string } }
 ) {
   try {
-    const { userId } = auth();
-    const { name, billboardId } = await req.json();
+    const { userId: user_id } = auth();
+    const { name } = await req.json();
 
-    if (!userId) {
+    if (!user_id) {
       return new NextResponse("Unathenticated", { status: 401 });
     }
 
-    if (!params.categoryId) {
+    if (!params.category_id) {
       return new NextResponse("Category id is required", { status: 400 });
-    }
-
-    if (!billboardId) {
-      return new NextResponse("Billboard id is required", { status: 400 });
     }
 
     if (!name) {
@@ -48,8 +44,8 @@ export async function PATCH(
 
     const storeByUserId = await prismadb.store.findFirst({
       where: {
-        id: params.storeId,
-        userId,
+        id: params.store_id,
+        user_id,
       },
     });
 
@@ -58,10 +54,9 @@ export async function PATCH(
     }
 
     const category = await prismadb.category.updateMany({
-      where: { id: params.categoryId },
+      where: { id: params.category_id },
       data: {
         name,
-        billboardId,
       },
     });
 
@@ -74,23 +69,23 @@ export async function PATCH(
 
 export async function DELETE(
   _req: Request,
-  { params }: { params: { storeId: string; categoryId: string } }
+  { params }: { params: { store_id: string; category_id: string } }
 ) {
   try {
-    const { userId } = auth();
+    const { userId: user_id } = auth();
 
-    if (!userId) {
+    if (!user_id) {
       return new NextResponse("Unathenticated", { status: 401 });
     }
 
-    if (!params.categoryId) {
+    if (!params.category_id) {
       return new NextResponse("Category id is required", { status: 400 });
     }
 
     const storeByUserId = await prismadb.store.findFirst({
       where: {
-        id: params.storeId,
-        userId,
+        id: params.store_id,
+        user_id,
       },
     });
 
@@ -99,7 +94,7 @@ export async function DELETE(
     }
 
     const category = await prismadb.category.deleteMany({
-      where: { id: params.categoryId },
+      where: { id: params.category_id },
     });
 
     return NextResponse.json(category);

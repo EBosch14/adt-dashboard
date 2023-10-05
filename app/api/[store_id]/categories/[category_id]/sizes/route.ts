@@ -4,17 +4,21 @@ import { NextResponse } from "next/server";
 
 export async function POST(
   req: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { store_id: string; category_id: string } }
 ) {
   try {
-    const { userId } = auth();
+    const { userId: user_id } = auth();
     const { name, value } = await req.json();
 
-    if (!userId) {
+    if (!user_id) {
       return new NextResponse("Unathenticated", { status: 401 });
     }
 
-    if (!params.storeId) {
+    if (!params.category_id) {
+      return new NextResponse("Category id is required", { status: 400 });
+    }
+
+    if (!params.store_id) {
       return new NextResponse("Store id is required", { status: 400 });
     }
 
@@ -28,8 +32,8 @@ export async function POST(
 
     const storeByUserId = await prismadb.store.findFirst({
       where: {
-        id: params.storeId,
-        userId,
+        id: params.store_id,
+        user_id,
       },
     });
 
@@ -41,7 +45,7 @@ export async function POST(
       data: {
         name,
         value,
-        storeId: params.storeId,
+        category_id: params.category_id,
       },
     });
 
@@ -54,20 +58,24 @@ export async function POST(
 
 export async function GET(
   req: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { store_id: string; category_id: string } }
 ) {
   try {
-    if (!params.storeId) {
+    if (!params.store_id) {
       return new NextResponse("Store id is required", { status: 400 });
     }
 
+    if (!params.category_id) {
+      return new NextResponse("Category id is required", { status: 400 });
+    }
+
     const sizes = await prismadb.size.findMany({
-      where: { storeId: params.storeId },
+      where: { category_id: params.category_id },
     });
 
     return NextResponse.json(sizes);
   } catch (error) {
-    console.log("[BILLBOARDS_GET]", error);
+    console.log("[SIZES_GET]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

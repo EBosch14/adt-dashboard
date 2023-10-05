@@ -4,10 +4,10 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { userId } = auth();
+    const { userId: user_id } = auth();
     const { name } = await req.json();
 
-    if (!userId) {
+    if (!user_id) {
       return new NextResponse("Unathenticated", { status: 401 });
     }
 
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     const store = await prismadb.store.create({
       data: {
         name,
-        userId,
+        user_id,
       },
     });
 

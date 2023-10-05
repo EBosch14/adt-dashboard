@@ -4,17 +4,17 @@ import { NextResponse } from "next/server";
 
 export async function POST(
   req: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { store_id: string } }
 ) {
   try {
-    const { userId } = auth();
-    const { name, value } = await req.json();
+    const { userId: user_id } = auth();
+    const { name } = await req.json();
 
-    if (!userId) {
+    if (!user_id) {
       return new NextResponse("Unathenticated", { status: 401 });
     }
 
-    if (!params.storeId) {
+    if (!params.store_id) {
       return new NextResponse("Store id is required", { status: 400 });
     }
 
@@ -22,14 +22,10 @@ export async function POST(
       return new NextResponse("Name is required", { status: 400 });
     }
 
-    if (!value) {
-      return new NextResponse("Value is required", { status: 400 });
-    }
-
     const storeByUserId = await prismadb.store.findFirst({
       where: {
-        id: params.storeId,
-        userId,
+        id: params.store_id,
+        user_id,
       },
     });
 
@@ -37,37 +33,36 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 403 });
     }
 
-    const color = await prismadb.color.create({
+    const category = await prismadb.category.create({
       data: {
         name,
-        value,
-        storeId: params.storeId,
+        store_id: params.store_id,
       },
     });
 
-    return NextResponse.json(color);
+    return NextResponse.json(category);
   } catch (error) {
-    console.log("[COLORS_POST]", error);
+    console.log("[CATEGORIES_POST]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
 
 export async function GET(
   req: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { store_id: string } }
 ) {
   try {
-    if (!params.storeId) {
+    if (!params.store_id) {
       return new NextResponse("Store id is required", { status: 400 });
     }
 
-    const colors = await prismadb.color.findMany({
-      where: { storeId: params.storeId },
+    const categories = await prismadb.category.findMany({
+      where: { store_id: params.store_id },
     });
 
-    return NextResponse.json(colors);
+    return NextResponse.json(categories);
   } catch (error) {
-    console.log("[COLORS_GET]", error);
+    console.log("[CATEGOIRES_GET]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
