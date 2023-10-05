@@ -13,44 +13,39 @@ export function MainNav({
 
   const routes = [
     {
-      href: `/${params.storeId}`,
+      href: `/${params.store_id}`,
       label: "general",
-      active: pathname === `/${params.storeId}`,
+      active: pathname === `/${params.store_id}`,
     },
     {
-      href: `/${params.storeId}/billboards`,
-      label: "paneles",
-      active: pathname === `/${params.storeId}/billboards`,
+      href: `/${params.store_id}/providers`,
+      label: "proveedores",
+      active: pathname === `/${params.store_id}/providers`,
     },
     {
-      href: `/${params.storeId}/categories`,
+      href: `/${params.store_id}/categories`,
       label: "categorías",
-      active: pathname === `/${params.storeId}/categories`,
+      active: pathname === `/${params.store_id}/categories`,
     },
     {
-      href: `/${params.storeId}/sizes`,
-      label: "capacidades",
-      active: pathname === `/${params.storeId}/sizes`,
-    },
-    {
-      href: `/${params.storeId}/colors`,
-      label: "colores",
-      active: pathname === `/${params.storeId}/colors`,
-    },
-    {
-      href: `/${params.storeId}/products`,
+      href: `/${params.store_id}/products`,
       label: "productos",
-      active: pathname === `/${params.storeId}/products`,
+      active: pathname === `/${params.store_id}/products`,
     },
     {
-      href: `/${params.storeId}/orders`,
-      label: "Pedidos",
-      active: pathname === `/${params.storeId}/orders`,
+      href: `/${params.store_id}/services`,
+      label: "services",
+      active: pathname === `/${params.store_id}/services`,
     },
     {
-      href: `/${params.storeId}/settings`,
+      href: `/${params.store_id}/orders`,
+      label: "ventas",
+      active: pathname === `/${params.store_id}/orders`,
+    },
+    {
+      href: `/${params.store_id}/settings`,
       label: "ajustes",
-      active: pathname === `/${params.storeId}/settings`,
+      active: pathname === `/${params.store_id}/settings`,
     },
   ];
 
@@ -64,7 +59,7 @@ export function MainNav({
             className={cn(
               "font-medium transition-colors hover:text-primary capitalize",
               route.active
-                ? "text-primary font-bold dark:text-white"
+                ? "text-primary font-bold dark:text-primary"
                 : "text-muted-foreground"
             )}>
             {route.label}

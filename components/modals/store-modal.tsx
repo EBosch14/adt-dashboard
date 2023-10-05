@@ -52,7 +52,6 @@ export const StoreModal = () => {
       const response = await axios.post("/api/stores", values);
 
       window.location.assign(`/${response.data.id}`);
-      // toast.success("Depósito creado exitosamente.");
     } catch (error) {
       toast.error("Ups! Algo salió mal al crear el depósito.");
     } finally {

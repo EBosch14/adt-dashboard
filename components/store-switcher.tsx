@@ -24,7 +24,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from "@/components/ui/command";
 import { Separator } from "@/components/ui/separator";
 
@@ -50,7 +49,7 @@ export default function StoreSwitcher({
   }));
 
   const currentStore = formattedStores.find(
-    (store) => store.value === params.storeId
+    (store) => store.value === params.store_id
   );
 
   const [open, setOpen] = useState(false);
@@ -72,7 +71,6 @@ export default function StoreSwitcher({
           className={cn("w-[200px] justify-between", className)}>
           <StoreIcon className="mr-2 h-4 w-4" />
           <span className="mr-2">{currentStore?.label}</span>
-          {/* {currentStore?.label} */}
           <ChevronsUpDownIcon className="ml-auto shrink-0 h-4 w-4" />
         </Button>
       </PopoverTrigger>
@@ -101,20 +99,6 @@ export default function StoreSwitcher({
               ))}
             </CommandGroup>
           </CommandList>
-          {/* <CommandSeparator />
-            <CommandList>
-            <CommandGroup>
-              <CommandItem
-                className="cursor-pointer text-sm"
-                onSelect={() => {
-                  setOpen(false);
-                  storeModal.onOpen();
-                }}>
-                <PlusCircleIcon className="mr-2 h-5 w-5" />
-                Crear Depósito
-              </CommandItem>
-            </CommandGroup>
-          </CommandList> */}
         </Command>
         <Separator />
         <Button
@@ -126,7 +110,6 @@ export default function StoreSwitcher({
             storeModal.onOpen();
           }}>
           <PlusCircleIcon className="mr-1 h-5 w-5" />
-          {/* <p className="mr-auto">Crear Depósito</p> */}
           Crear Depósito
         </Button>
       </PopoverContent>
