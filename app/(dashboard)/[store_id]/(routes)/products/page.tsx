@@ -4,6 +4,7 @@ import prismadb from "@/lib/prismadb";
 import { ProductClient } from "./components/client";
 import { ProductColumn } from "./components/columns";
 import { formatter } from "@/lib/utils";
+import AsideComponent from "@/components/aside";
 
 const ProductsPage = async ({ params }: { params: { store_id: string } }) => {
   const products = await prismadb.product.findMany({
@@ -34,7 +35,8 @@ const ProductsPage = async ({ params }: { params: { store_id: string } }) => {
   }));
 
   return (
-    <div className="flex-col">
+    <div className="flex">
+      <AsideComponent />
       <div className="flex-1 space-y-4 p-8 pt-6">
         <ProductClient data={formattedProducts} />
       </div>

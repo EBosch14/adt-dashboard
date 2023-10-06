@@ -18,24 +18,24 @@ export function MainNav({
       active: pathname === `/${params.store_id}`,
     },
     {
-      href: `/${params.store_id}/providers`,
-      label: "proveedores",
-      active: pathname === `/${params.store_id}/providers`,
-    },
-    {
-      href: `/${params.store_id}/categories`,
-      label: "categorías",
-      active: pathname === `/${params.store_id}/categories`,
-    },
-    {
       href: `/${params.store_id}/products`,
       label: "productos",
       active: pathname === `/${params.store_id}/products`,
     },
     {
       href: `/${params.store_id}/services`,
-      label: "services",
+      label: "servicios",
       active: pathname === `/${params.store_id}/services`,
+    },
+    {
+      href: `/${params.store_id}/clients`,
+      label: "clientes",
+      active: pathname === `/${params.store_id}/clients`,
+    },
+    {
+      href: `/${params.store_id}/providers`,
+      label: "proveedores",
+      active: pathname === `/${params.store_id}/providers`,
     },
     {
       href: `/${params.store_id}/orders`,
@@ -47,10 +47,15 @@ export function MainNav({
       label: "ajustes",
       active: pathname === `/${params.store_id}/settings`,
     },
+    {
+      href: `/${params.store_id}/categories`,
+      label: "categorías",
+      active: pathname === `/${params.store_id}/categories`,
+    },
   ];
 
   return (
-    <nav className={cn("flex items-center space-x-4 lg:space-x-6", className)}>
+    <nav className={cn("flex items-center space-x-8 lg:space-x-10", className)}>
       {routes.map((route) => {
         return (
           <Link
