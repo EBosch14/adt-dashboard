@@ -26,7 +26,7 @@ export const ColorClient: React.FC<ColorClientProps> = ({ data }) => {
         />
         <Button onClick={() => router.push(`/${params.storeId}/colors/new`)}>
           <PlusIcon className="mr-2 h-4 w-4" />
-          Agregar
+          Agrregr
         </Button>
       </div>
       <Separator />
